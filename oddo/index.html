@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketFlow - Support Ticket Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="enhanced-styles.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b sticky top-0 z-50" id="main-nav" style="display: none;">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            <i class="fas fa-ticket-alt text-blue-600 mr-2"></i>
+                            TicketFlow
+                        </h1>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#" onclick="showDashboard()" class="nav-link active border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                        <a href="#" onclick="showCreateTicket()" class="nav-link border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            <i class="fas fa-plus mr-2"></i>New Ticket
+                        </a>
+                        <a href="#" onclick="showProfile()" class="nav-link border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            <i class="fas fa-user mr-2"></i>Profile
+                        </a>
+                        <a href="#" onclick="showCategories()" id="admin-nav" class="nav-link border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" style="display: none;">
+                            <i class="fas fa-tags mr-2"></i>Categories
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button onclick="toggleUserMenu()" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium" id="user-avatar">
+                                U
+                            </div>
+                            <span class="ml-2 text-gray-700" id="user-name">User</span>
+                            <i class="fas fa-chevron-down ml-1 text-gray-400"></i>
+                        </button>
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="#" onclick="showSettings()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-cog mr-2"></i>Settings
+                                </a>
+                                <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="min-h-screen">
+        <!-- Authentication Section -->
+        <div id="auth-section" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+            <div class="max-w-md w-full space-y-8 p-8">
+                <!-- Login Form -->
+                <div id="login-form" class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <div class="mx-auto h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-ticket-alt text-white text-xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-900">Welcome to TicketFlow</h2>
+                        <p class="text-gray-600 mt-2">Sign in to manage your support tickets</p>
+                    </div>
+                    <form onsubmit="login(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="login-email" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                       placeholder="Enter your email">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input type="password" id="login-password" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                       placeholder="Enter your password">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full mt-6 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition duration-200 font-medium">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                        </button>
+                    </form>
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            Don't have an account? 
+                            <a href="#" onclick="showRegister()" class="text-blue-600 hover:text-blue-500 font-medium">Create one</a>
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <p class="text-xs text-gray-500 mb-2">Demo Accounts:</p>
+                            <div class="text-xs text-gray-600 space-y-1">
+                                <div>User: user@demo.com / password</div>
+                                <div>Agent: agent@demo.com / password</div>
+                                <div>Admin: admin@demo.com / password</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="bg-white rounded-xl shadow-lg p-8" style="display: none;">
+                    <div class="text-center mb-8">
+                        <div class="mx-auto h-12 w-12 bg-green-600 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-user-plus text-white text-xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-900">Create Account</h2>
+                        <p class="text-gray-600 mt-2">Join TicketFlow to manage support tickets</p>
+                    </div>
+                    <form onsubmit="register(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input type="text" id="register-name" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                       placeholder="Enter your full name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="register-email" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                       placeholder="Enter your email">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input type="password" id="register-password" required minlength="6"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                       placeholder="Create a password (min 6 characters)">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <select id="register-role" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                                    <option value="user">User - Submit and track tickets</option>
+                                    <option value="agent">Support Agent - Manage tickets</option>
+                                    <option value="admin">Admin - Full system access</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full mt-6 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 transition duration-200 font-medium">
+                            <i class="fas fa-user-plus mr-2"></i>Create Account
+                        </button>
+                    </form>
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? 
+                            <a href="#" onclick="showLogin()" class="text-blue-600 hover:text-blue-500 font-medium">Sign in</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8" style="display: none;">
+            <!-- Dashboard content will be loaded here -->
+        </div>
+
+        <!-- Create Ticket Section -->
+        <div id="create-ticket-section" class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8" style="display: none;">
+            <!-- Create ticket content will be loaded here -->
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile-section" class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8" style="display: none;">
+            <!-- Profile content will be loaded here -->
+        </div>
+
+        <!-- Categories Section -->
+        <div id="categories-section" class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8" style="display: none;">
+            <!-- Categories content will be loaded here -->
+        </div>
+
+        <!-- Ticket Detail Section -->
+        <div id="ticket-detail-section" class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8" style="display: none;">
+            <!-- Ticket detail content will be loaded here -->
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8" style="display: none;">
+            <!-- Settings content will be loaded here -->
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Modals Container -->
+    <div id="modals-container"></div>
+
+    <script src="app.js"></script>
+    <script src="app-functions.js"></script>
+    <script src="app-advanced.js"></script>
+</body>
+</html>
